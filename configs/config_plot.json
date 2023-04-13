@@ -1,0 +1,43 @@
+{
+	"loss":0,
+	"is_test":0,
+	"is_analysis":0,
+	"base_data_path": "/lcrc/project/cosmo_ai/dongx/UNET-64-diff-z/0-to-1/data3d-diff-z/",
+	"output_path": "/lcrc/project/cosmo_ai/dongx/UNET-64-diff-z/0-to-1/result/",
+	"train": {
+		"data_partition": {
+			"lIndex": 1000,
+			"hIndex":9000,
+			"aug": 0
+		},
+		"batch_size": 8,
+		"num_workers": 4,
+		"num_epoches": 50, 
+		"eval_frequency": 20
+	},
+	"pow": {
+		"plot": 0,
+		"batch_size": 100,
+		"num_workers": 4
+	},
+	"slice": {
+		"data_partition": {
+			"lIndex": 0,
+			"hIndex": 1000,
+			"aug": 0
+		},
+		"path_pred":"/lcrc/project/cosmo_ai/dongx/UNET-64-diff-z/0-to-1/result/",
+		"plot": 1,
+		"num_workers": 4
+	},
+	"net_params":{
+		"lr":1e-4,
+		"reg":1e-4
+	},
+	"analysis":{
+		"A":0,
+		"k":0,
+		"size":32,
+		"phi":0
+	}
+}
