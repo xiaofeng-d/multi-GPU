@@ -2,8 +2,8 @@
 	"is_train":1,
 	"is_test":0,
 	"is_analysis":0,
-	"base_data_path": "/lcrc/project/cosmo_ai/dongx/Multi-GPU/0.3-0.4/PM-data/",
-	"output_path": "/lcrc/project/cosmo_ai/dongx/Multi-GPU/0.3-0.4/result/",
+	"base_data_path": "/lcrc/project/cosmo_ai/dongx/Multi-GPU/0.3-0.4-multiGPU/PM-data/",
+	"output_path": "/lcrc/project/cosmo_ai/dongx/Multi-GPU/0.3-0.4-multiGPU/result/",
 	"train": {
 		"data_partition": {
 			"label":"train",
@@ -33,7 +33,7 @@
 			"hIndex": 1000,
 			"aug": 0
 		},
-		"model":"/lcrc/project/cosmo_ai/dongx/Multi-GPU/0.3-0.4/result/BestModel_8batchsize.pt",
+		"model":"/lcrc/project/cosmo_ai/dongx/Multi-GPU/0.3-0.4-multiGPU/result/BestModel_8batchsize.pt",
 		"batch_size": 1,
 		"num_workers": 2
 	},
