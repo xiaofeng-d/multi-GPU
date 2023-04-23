@@ -83,19 +83,20 @@ if __name__ == "__main__":
 	class LitUNet(pl.LightningModule):
 		def __init__(self):
 			super().__init__()
+			self.configs = configs
 			self.net = Lpt2NbodyNet(BasicBlock)
 			# self.net = nn.DataParallel(net)
 			# self.net = net.to(device)
 			# net = Lpt2NbodyNet(BasicBlock)
 			# device = torch.device("cuda" if torch.cuda.is_available() else 'cpu')
-			self.loss =  F.MSELoss
+			self.loss =  F.mse_loss
 
 		def forward(self, x):
 			ypred = self.net(x)
 			return ypred
 
 		def configure_optimizers(self):
-			optimizer = torch.optim.Adam(self.parameters,lr=configs["net_params"]['lr'], betas=(0.9, 0.999), eps=1e-08, weight_decay=configs["net_params"]['reg'])
+			optimizer = torch.optim.Adam(self.net.parameters(),lr=configs["net_params"]['lr'], betas=(0.9, 0.999), eps=1e-08, weight_decay=configs["net_params"]['reg'])
 			return optimizer
 		
 		def training_step(self, train_batch, batch_idx):
@@ -124,7 +125,7 @@ if __name__ == "__main__":
 	trainer = pl.Trainer(accelerator= 'gpu', devices=4)
 	x = TrainLoader
 	y = ValLoader
-	trainer.fit(model, x, y)  ## x, y  -> trainloader
+	trainer.fit(model, train_dataloaders = TrainLoader)  ## x, y  -> trainloader
 
 	### runs the model, specify number of 
 
