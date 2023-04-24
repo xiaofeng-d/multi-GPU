@@ -121,8 +121,9 @@ if __name__ == "__main__":
 
 	model = LitUNet()		
 	## set up traning and validation data  
-
-	trainer = pl.Trainer(accelerator= 'gpu', devices=4)
+	print('how many GPUs?')
+	print(torch.cuda.device_count())
+	trainer = pl.Trainer(strategy = 'ddp', accelerator= 'gpu', devices=8)
 	x = TrainLoader
 	y = ValLoader
 	trainer.fit(model, train_dataloaders = TrainLoader)  ## x, y  -> trainloader
