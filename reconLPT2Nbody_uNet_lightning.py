@@ -76,7 +76,7 @@ if __name__ == "__main__":
 	iterTime = 0
 	best_validation_accuracy = 100
 
-
+	
 
     ### set up a trainloader
 
@@ -90,6 +90,7 @@ if __name__ == "__main__":
 			# net = Lpt2NbodyNet(BasicBlock)
 			# device = torch.device("cuda" if torch.cuda.is_available() else 'cpu')
 			self.loss =  F.mse_loss
+			self.save_dir = configs["output_path"]
 
 		def forward(self, x):
 			ypred = self.net(x)
@@ -115,18 +116,45 @@ if __name__ == "__main__":
 
 			return loss 
 		
+		def test_step(self, test_batch, batch_idx):
+			x, y = test_batch
+			# x, y = test_batch
+			Y_pred = self.net(x)
+			loss = self.loss(Y_pred, y)
+			Y_pred_np = Y_pred.cpu().detach().numpy()
+			save_path = os.path.join(self.save_dir, f"y_pred_{batch_idx}.npy")
+			np.save(save_path, Y_pred_np)
+			self.log('test_loss', loss, on_epoch = False)
+			
+			return loss
+		
+		
 		def validation_step(self, val_batch, batch_idx):
 			x, y = val_batch
 			# x, y = val_batch
 
-	model = LitUNet()		
+
 	## set up traning and validation data  
 	print('how many GPUs?')
 	print(torch.cuda.device_count())
-	trainer = pl.Trainer(strategy = 'ddp', accelerator= 'gpu', devices=8)
-	x = TrainLoader
-	y = ValLoader
-	trainer.fit(model, train_dataloaders = TrainLoader)  ## x, y  -> trainloader
+	
+	
+	if configs["is_train"]:
+		model = LitUNet()
+		trainer = pl.Trainer(strategy = 'ddp', accelerator= 'gpu', devices=8)
+		x = TrainLoader
+		y = ValLoader
+		trainer.fit(model, train_dataloaders = TrainLoader)  ## x, y  -> trainloader
+
+	elif configs["is_test"]:
+		PATH_TO_MODEL_CHECKPOINT = configs["path_to_model_checkpoint"]
+		model = LitUNet.load_from_checkpoint(PATH_TO_MODEL_CHECKPOINT)
+		trainer = pl.Trainer(strategy = 'ddp', accelerator= 'gpu', devices=8)
+		x = TestLoader
+		trainer.test(model, test_dataloader = TestLoader)
+
+	## test the code ##
+
 
 	### runs the model, specify number of 
 
