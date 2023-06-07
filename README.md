@@ -1,3 +1,10 @@
+### Pytorch Lightning modifications
+
+We're using the Pytorch Lightning framework for convenience of training with multiple GPUs and possibly tackling larger box and many more particles.
+
+
+
+
 # ML-Recon
 
 ## Objective:
