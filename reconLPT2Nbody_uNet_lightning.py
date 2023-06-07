@@ -141,7 +141,7 @@ if __name__ == "__main__":
 	
 	if configs["is_train"]:
 		model = LitUNet()
-		trainer = pl.Trainer(strategy = 'ddp', accelerator= 'gpu', devices=8)
+		trainer = pl.Trainer(num_nodes=2, strategy = 'ddp', accelerator= 'gpu', devices=-1)
 		x = TrainLoader
 		y = ValLoader
 		trainer.fit(model, train_dataloaders = TrainLoader)  ## x, y  -> trainloader
