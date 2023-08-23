@@ -37,7 +37,7 @@ if __name__ == "__main__":
 	args = setup_environment(args)
 	args = init_distributed(args)
 	model = setup_model(args)
-	print(model)
+	# print(model)
 
 	import os
 	os.environ["CUDA_VISIBLE_DEVICES"] = args.cuda_visible_devices
@@ -123,12 +123,14 @@ if __name__ == "__main__":
 				#NetInput = torch.autograd.Variable(data[0],requires_grad=False).cuda()
 				NetInput = torch.autograd.Variable(data[0],requires_grad=False) 
 				#.to(device)
-				print('NetInput shape:')
-				print(NetInput.shape)
-				Y_pred = model(NetInput)
-				print(Y_pred)
+				if(zero):
+					print('NetInput shape:')
+					print(NetInput.shape)
+				# Y_pred = model(NetInput)
+				# print(Y_pred)
 				# loss = criterion(Y_pred, torch.autograd.Variable(data[1],requires_grad=False).cuda())
-				loss = criterion(Y_pred, torch.autograd.Variable(data[1],requires_grad=False)) #.to(device)
+				target = torch.autograd.Variable(data[1],requires_grad=False)
+				loss = model(NetInput, target) # criterion(Y_pred, torch.autograd.Variable(data[1],requires_grad=False)) #.to(device)
 				loss_train.append(loss.item())
 				loss.backward()
 				optimizer.step()
@@ -143,9 +145,9 @@ if __name__ == "__main__":
 						with torch.no_grad():
 							# NetInput = torch.autograd.Variable(data[0],requires_grad=False).cuda()
 							NetInput = torch.autograd.Variable(data[0],requires_grad=False)#.to(device)
-							Y_pred = model(NetInput)
+							loss_new = model(NetInput)
 							# _loss += criterion(Y_pred, torch.autograd.Variable(data[1],requires_grad=False).cuda()).item()
-							_loss += criterion(Y_pred, torch.autograd.Variable(data[1],requires_grad=False)).item()
+							_loss += loss_new #criterion(Y_pred, torch.autograd.Variable(data[1],requires_grad=False)).item()
 					loss_val.append(_loss/t_val)
 					np.savetxt(output_path+'valLoss.txt',loss_val)
 					if zero:

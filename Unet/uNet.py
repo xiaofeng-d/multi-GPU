@@ -47,7 +47,7 @@ class Lpt2NbodyNet(nn.Module):
 			inplanes = outplanes
 		return nn.Sequential(*layers)
 
-	def forward(self,x):
+	def forward(self,x,target=None):
 		# print('forward called')
 		x1 = self.layer1(x)
 		x  = self.layer2(x1)
@@ -65,8 +65,13 @@ class Lpt2NbodyNet(nn.Module):
 		x  = torch.cat((x,x1),dim=1)
 		x  = self.layer7(x)
 		x  = self.deconv4(x)
+
+		criterion = nn.MSELoss()
+		loss = criterion(x, target)
+
 		# print('x final shape',x.shape)
-		return x
+		# return x 
+		return loss
 
 		
 	# def forward(self,x):
