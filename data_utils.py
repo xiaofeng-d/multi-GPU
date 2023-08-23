@@ -1,63 +1,67 @@
 import torch
 from torch.utils.data.dataset import Dataset
+from argparse import Namespace, ArgumentParser
 import numpy as np
 import sys
 sys.path.insert(0,'/mnt/home/siyuh/Project/Recon/analysis')
 sys.path.insert(0, '/lcrc/project/cosmo_ai/dongx/PM-128-redshift/0.2-0.3')
 #from genwaves import genwaves
 
-class SimuData_old(Dataset):
-	def __init__(self,base_path,lIndex,hIndex,aug):
-		self.datafiles = []
-		for x in np.arange(lIndex,hIndex,1000):
-			y = [base_path+str(x)+'_'+str(i)+'.npy' for i in range(1000)]
-			self.datafiles+=y
-		self.aug=aug
+# class SimuData_old(Dataset):
+# 	def __init__(self,base_path,lIndex,hIndex,aug):
+# 		self.datafiles = []
+# 		for x in np.arange(lIndex,hIndex,1000):
+# 			y = [base_path+str(x)+'_'+str(i)+'.npy' for i in range(1000)]
+# 			self.datafiles+=y
+# 		self.aug=aug
 
-	def __getitem__(self, index):
-		print("index="+str(index))
-		return get_mini_batch(self.datafiles[index],self.aug)
+# 	def __getitem__(self, index):
+# 		print("index="+str(index))
+# 		return get_mini_batch(self.datafiles[index],self.aug)
 
-	def __len__(self):
-		return len(self.datafiles)
+# 	def __len__(self):
+# 		return len(self.datafiles)
 
 
 class SimuData(Dataset):  ## XFD Version --- with the correct splitting of test and training
-	def __init__(self,base_path,label,aug):
-		self.datafiles = []
+	def __init__(self, args:Namespace, split:str='train'): #base_path #label
+		# self.datafiles = []
 		#for x in np.arange(lIndex,hIndex,1000):
 			#y = [base_path+str(x)+'_'+str(i)+'.npy' for i in range(1000)]
-		y = [base_path + 'lagr_' + str(i) + '_'+ label + '.npy' for i in range(2)]
-		print(y)
-		self.datafiles+=y
-		self.aug=aug
-		self.label=label
+		#y = [base_path + 'lagr_' + str(i) + '_'+ label + '.npy' for i in range(2)]
+		# y = args.train_data
+		
+		self.datafiles =[args.base_data_path+'snap0_'+ split + '.npy' , args.base_data_path+'snap1_'+split + '.npy']
+		print(self.datafiles)
+		self.aug = args.aug
+		self.label = split
 
 	def __getitem__(self, index):
 		return get_mini_batch(self.datafiles, index, self.aug)
 
 	def __len__(self):
 		if(self.label=="val"):
-			return 199  ## needs thinking 
+			return 10  ## needs thinking 
 		if(self.label=="train"):
-			return 399
+			return 10
 		if(self.label=="test"):
-			return 200
-class SimuData_oldnew(Dataset):  ## XFD Version 
-	def __init__(self,base_path,label,aug):
-		self.datafiles = []
-		#for x in np.arange(lIndex,hIndex,1000):
-			#y = [base_path+str(x)+'_'+str(i)+'.npy' for i in range(1000)]
-		y = [base_path + 'lagr_' + str(i)  + '.npy' for i in range(10)]
-		self.datafiles+=y
+			return 10
+		
+# class SimuData_oldnew(Dataset):  ## XFD Version 
+# 	def __init__(self,base_path,label,aug):
+# 		self.datafiles = []
+# 		#for x in np.arange(lIndex,hIndex,1000):
+# 			#y = [base_path+str(x)+'_'+str(i)+'.npy' for i in range(1000)]
+# 		y = [base_path + 'lagr_' + str(i)  + '.npy' for i in range(10)]
+# 		self.datafiles+=y
 
-		self.aug=aug
+# 		self.aug=aug
 
-	def __getitem__(self, index):
-		return get_mini_batch(self.datafiles, index, self.aug)
+# 	def __getitem__(self, index):
+# 		return get_mini_batch(self.datafiles, index, self.aug)
 
-	def __len__(self):
-		return 1000  ## needs thinking 
+# 	def __len__(self):
+# 		return 1000  ## needs thinking 
 
 
 

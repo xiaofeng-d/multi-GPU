@@ -12,7 +12,7 @@ class BasicBlock(nn.Module):
 		super(BasicBlock, self).__init__()
 		self.conv1 = conv3x3(inplane,outplane,padding=0,stride=stride)
 		self.bn1 = nn.BatchNorm3d(outplane)
-		self.relu = nn.ReLU(inplace=True)
+		self.relu = nn.ReLU(inplace=True) #true
 
 	def forward(self,x):
 		x = periodic_padding_3d(x,pad=(1,1,1,1,1,1))
@@ -23,6 +23,7 @@ class BasicBlock(nn.Module):
 
 class Lpt2NbodyNet(nn.Module):
 	def __init__(self, block):
+		# print('init called for Lpt2NbodyNet')
 		super(Lpt2NbodyNet,self).__init__()
 		self.layer1 = self._make_layer(block, 3, 64, blocks=2,stride=1)
 		self.layer2 = self._make_layer(block,64,128, blocks=1,stride=2)
@@ -47,19 +48,43 @@ class Lpt2NbodyNet(nn.Module):
 		return nn.Sequential(*layers)
 
 	def forward(self,x):
+		# print('forward called')
 		x1 = self.layer1(x)
 		x  = self.layer2(x1)
 		x2 = self.layer3(x)
 		x  = self.layer4(x2)
 		x  = self.layer5(x)
 		x  = periodic_padding_3d(x,pad=(0,1,0,1,0,1))
-		x  = nn.functional.relu(self.deconv_batchnorm1(crop_tensor(self.deconv1(x))),inplace=True)
+		x  = nn.functional.relu(self.deconv_batchnorm1(crop_tensor(self.deconv1(x))),inplace=True) #true
+		# print('x shape',x.shape)
+		# print('x2 shape', x2.shape)
 		x  = torch.cat((x,x2),dim=1)
 		x  = self.layer6(x)
 		x  = periodic_padding_3d(x,pad=(0,1,0,1,0,1))
-		x  = nn.functional.relu(self.deconv_batchnorm2(crop_tensor(self.deconv2(x))),inplace=True)
+		x  = nn.functional.relu(self.deconv_batchnorm2(crop_tensor(self.deconv2(x))),inplace=True) #true 
 		x  = torch.cat((x,x1),dim=1)
 		x  = self.layer7(x)
 		x  = self.deconv4(x)
-
+		# print('x final shape',x.shape)
 		return x
+
+		
+	# def forward(self,x):
+	# 	x1 = self.layer1(x)
+	# 	x  = self.layer2(x1)
+	# 	x1 = x1.detach().cpu()
+	# 	x2 = self.layer3(x)
+	# 	x  = self.layer4(x2)
+	# 	x2 = x2.detach()
+	# 	x  = self.layer5(x)
+	# 	x  = periodic_padding_3d(x,pad=(0,1,0,1,0,1))
+	# 	x  = nn.functional.relu(self.deconv_batchnorm1(crop_tensor(self.deconv1(x))),inplace=True)
+	# 	x  = torch.cat((x,x2.to(torch.cuda.current_device())),dim=1)
+	# 	x  = self.layer6(x)
+	# 	x  = periodic_padding_3d(x,pad=(0,1,0,1,0,1))
+	# 	x  = nn.functional.relu(self.deconv_batchnorm2(crop_tensor(self.deconv2(x))),inplace=True)
+	# 	x  = torch.cat((x,x1.to(torch.cuda.current_device())),dim=1)
+	# 	x  = self.layer7(x)
+	# 	x  = self.deconv4(x)
+
+	# 	return x

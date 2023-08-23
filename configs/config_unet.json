@@ -4,8 +4,8 @@
 	"is_train":1,
 	"is_test":0,
 	"is_analysis":0,
-	"base_data_path": "/lcrc/project/cosmo_ai/dongx/Multi-GPU/0.3-0.4-multiGPU/PM-data/",
-	"output_path": "/lcrc/project/cosmo_ai/dongx/Multi-GPU/0.3-0.4-multiGPU/result/",
+	"base_data_path": "/lcrc/project/cosmo_ai/dongx/Multi-GPU/capacity-test/192-data/",
+	"output_path": "/lcrc/project/cosmo_ai/dongx/Multi-GPU/capacity-test/result/",
 	"train": {
 		"data_partition": {
 			"label":"train",
@@ -13,7 +13,7 @@
 			"hIndex":9000,
 			"aug": 0
 		},
-		"batch_size": 2,
+		"batch_size": 1,
 		"num_workers": 1,
 		"num_epoches": 20, 
 		"eval_frequency": 20
